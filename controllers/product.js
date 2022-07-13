@@ -52,6 +52,7 @@ exports.getAllProduct = (req, res, next) => {
   const filter = {};
   Product.find(filter)
     .then((products) => {
+      // console.log(products);
       if (products) {
         return res.status(200).send({
           status: true,
