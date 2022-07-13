@@ -1,54 +1,51 @@
 const Product = require('../models/product');
 const jwt = require('jsonwebtoken');
 
-exports.createProduct = (req, res, next) => {
+exports.createProduct = async (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const id = decodedToken.id;
 
-  cloudinary.uploader.upload(req.file.path, (error, result) => {
-    if (result) {
-      let image = result.secure_url;
-      req.body.image = image;
-      const newProduct = Product.create(req.body);
-      newProduct
-        .then((product) => {
-          Product.findOneAndUpdate(
-            { _id: product._id },
-            { farmer: id },
-            {
-              new: true,
-            }
-          ).then((product) => {
-            res.status(201).json({
-              status: 'success',
-              message: 'Product registered successfully',
-              data: {
-                name: product.name,
-                location: product.location,
-              },
-            });
-          });
-        })
-        .catch((error) => {
-          res.status(400).json({
-            status: 'fail',
-            message: 'product registration not successfull',
+  if (req.file.filename) {
+    req.body.image = req.file.filename;
+    const newProduct = Product.create(req.body);
+    newProduct
+      .then((product) => {
+        Product.findOneAndUpdate(
+          { _id: product._id },
+          { farmer: id },
+          {
+            new: true,
+          }
+        ).then((product) => {
+          res.status(201).json({
+            status: 'success',
+            message: 'Product registered successfully',
             data: {
-              error: error.message,
+              name: product.name,
+              location: product.location,
             },
           });
         });
-    } else {
-      res.status(400).json({
-        status: 'fail',
-        message: 'product registration not successfull',
-        data: {
-          error: error.message,
-        },
+      })
+      .catch((error) => {
+        res.status(400).json({
+          status: 'fail',
+          message: 'product registration not successfull',
+          data: {
+            error: error.message,
+          },
+        });
       });
-    }
-  });
+  } else {
+    res.status(400).json({
+      status: 'fail',
+      message: 'product registration not successfull',
+      data: {
+        error: error.message,
+      },
+    });
+  }
 };
 
 exports.getAllProduct = (req, res, next) => {

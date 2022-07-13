@@ -1,14 +1,14 @@
+require('dotenv').config();
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const rateLimit = require('express-rate-limit');
+var morgan = require('morgan');
+const path = require('path');
 
 const express = require('express');
-require('dotenv').config();
 const cors = require('cors');
-
-const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user');
 const investmentRoutes = require('./routes/investment');
@@ -17,6 +17,10 @@ const emailRoutes = require('./routes/email');
 const connectDB = require('./db/connect');
 
 const app = express();
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 //HTTP headers
 app.use(helmet());
@@ -40,6 +44,11 @@ app.use(
   })
 );
 
+// Static Folder
+const directory = path.join(__dirname, 'uploads');
+console.log(directory);
+app.use('/uploads', express.static(directory));
+
 //NoSQL query injection -Data Sanitization
 app.use(mongoSanitize());
 
@@ -55,7 +64,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/email', emailRoutes);
 
 app.get('/', (req, res) => {
-  res.status(201).json({
+  res.status(200).json({
     status: 'success',
     message: 'Welcome to FarmConnect api page',
   });
@@ -63,7 +72,6 @@ app.get('/', (req, res) => {
 
 //Handling unhandle routes
 app.all('*', (req, res, next) => {
-  console.log(req);
   return res.status(404).json({
     status: 'Error 404',
     message: `Page not found. Can't find ${req.originalUrl} on this server`,

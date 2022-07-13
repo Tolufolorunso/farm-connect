@@ -12,8 +12,6 @@ const { findByIdAndUpdate } = require('../models/email');
 const deleteImg = require('../utils/deleteImage');
 
 exports.signupFarmer = async (req, res, next) => {
-  // console.log(req.body);
-  // return res.send('dsas');
   try {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
@@ -78,6 +76,7 @@ exports.signupInvestor = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
+  console.log(req.body);
   try {
     const { email, password } = req.body;
 
@@ -259,6 +258,7 @@ exports.getAFarmer = async (req, res, next) => {
         message: 'User not found',
       });
     }
+    console.log(farmer);
     res.status(200).json({
       status: 'success',
       data: {
