@@ -23,12 +23,12 @@ router.get(
   userController.getAInvestor
 );
 
-// router.patch(
-//   '/profile/investor/:investorId',
-//   auth.authentication('investor', 'admin'),
-//   upload.single('image'),
-//   userController.investorProfileUpdate
-// );
+router.patch(
+  '/profile/investor/:investorId',
+  auth.authentication('investor', 'admin'),
+  upload.single('image'),
+  userController.investorProfileUpdate
+);
 
 router.get(
   '/farmers',

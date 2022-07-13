@@ -206,47 +206,47 @@ exports.getAllInvestors = async (req, res, next) => {
   }
 };
 
-exports.investorProfileUpdate = (req, res, next) => {
+exports.investorProfileUpdate = async (req, res, next) => {
   //this line will override user if they want to change thier role to admin,
   req.body.role = 'investor';
-  cloudinary.uploader.upload(req.file.path, (error, result) => {
-    if (result) {
-      let image = result.secure_url;
-      req.body.image = image;
-      const investor = User.findByIdAndUpdate(req.params.investorId, req.body, {
+  try {
+    if (req.file.filename) {
+      req.body.image = req.file.filename;
+    }
+
+    const investor = await User.findByIdAndUpdate(
+      req.params.investorId,
+      req.body,
+      {
         new: true,
         runValidators: true,
-      }).select('-__v');
+      }
+    ).select('-__v');
 
-      investor
-        .then((investor) => {
-          res.status(200).json({
-            status: 'success',
-            message: 'User profile successfully updated',
-            data: {
-              investor,
-            },
-          });
-        })
-        .catch((error) => {
-          res.status(404).json({
-            status: 'fail',
-            message: 'User not found',
-            data: {
-              error: error.message,
-            },
-          });
-        });
-    } else {
-      res.status(404).json({
-        status: 'fail',
+    if (!investor) {
+      deleteImg(req.file.filename);
+      return res.status(404).json({
+        status: false,
         message: 'User not found',
-        data: {
-          error: error.message,
-        },
       });
     }
-  });
+
+    res.status(200).json({
+      status: true,
+      message: 'User profile successfully updated',
+      data: {
+        investor,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'Server error',
+      data: {
+        errorMessage: error.message,
+      },
+    });
+  }
 };
 
 exports.getAFarmer = async (req, res, next) => {
