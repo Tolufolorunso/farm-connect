@@ -86,7 +86,7 @@ exports.login = async (req, res, next) => {
     }
 
     //I'm Checking here if user exist in DB
-    const user = await User.findOne({
+    let user = await User.findOne({
       email,
     }).select('+password');
 
@@ -105,6 +105,9 @@ exports.login = async (req, res, next) => {
       }
     );
 
+    user = user.toObject();
+    delete user.password;
+
     res.status(200).json({
       status: 'success',
       message: 'You are logged in successfully',
@@ -112,6 +115,7 @@ exports.login = async (req, res, next) => {
       user,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(400).json({
       status: 'fail',
       message: 'unable to login',
