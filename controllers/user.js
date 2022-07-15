@@ -76,7 +76,6 @@ exports.signupInvestor = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  console.log(req.body);
   try {
     const { email, password } = req.body;
 
@@ -109,7 +108,7 @@ exports.login = async (req, res, next) => {
     delete user.password;
 
     res.status(200).json({
-      status: 'success',
+      status: true,
       message: 'You are logged in successfully',
       token,
       user,
@@ -117,7 +116,7 @@ exports.login = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
     res.status(400).json({
-      status: 'fail',
+      status: false,
       message: 'unable to login',
       data: {
         error: error.message,
