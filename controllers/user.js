@@ -15,26 +15,22 @@ exports.signupFarmer = async (req, res, next) => {
   try {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
-      return res.status(423).json({
+      return res.status(400).json({
         status: false,
         message: 'This email already exists',
       });
     }
     req.body.role = 'farmer';
 
-    const farmer = await User.create(req.body);
+    await User.create(req.body);
 
     res.status(201).json({
-      status: 'success',
+      status: true,
       message: 'User registered successfully',
-      data: {
-        name: farmer.name,
-        email: farmer.email,
-      },
     });
   } catch (error) {
     res.status(400).json({
-      status: 'fail',
+      status: false,
       message: 'registration not successfull',
       data: {
         error: error.message,
@@ -47,26 +43,22 @@ exports.signupInvestor = async (req, res, next) => {
   try {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
-      return res.status(423).json({
+      return res.status(400).json({
         status: false,
         message: 'This email already exists',
       });
     }
     req.body.role = 'investor';
 
-    const investor = await User.create(req.body);
+    await User.create(req.body);
 
     res.status(201).json({
-      status: 'success',
+      status: true,
       message: 'User registered successfully',
-      data: {
-        name: investor.name,
-        email: investor.email,
-      },
     });
   } catch (error) {
     res.status(400).json({
-      status: 'fail',
+      status: false,
       message: 'registration not successfull',
       data: {
         error: error.message,

@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'Please provide password'],
+    required: [true, 'Please provide passwordConfirm'],
     trim: true,
     validate: {
       validator: function (el) {
