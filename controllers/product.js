@@ -19,7 +19,7 @@ exports.createProduct = async (req, res, next) => {
           }
         ).then((product) => {
           res.status(201).json({
-            status: 'success',
+            status: true,
             message: 'Product registered successfully',
             data: {
               name: product.name,
@@ -30,7 +30,7 @@ exports.createProduct = async (req, res, next) => {
       })
       .catch((error) => {
         res.status(400).json({
-          status: 'fail',
+          status: false,
           message: 'product registration not successfull',
           data: {
             error: error.message,
@@ -39,7 +39,7 @@ exports.createProduct = async (req, res, next) => {
       });
   } else {
     res.status(400).json({
-      status: 'fail',
+      status: false,
       message: 'product registration not successfull',
       data: {
         error: error.message,
@@ -67,7 +67,7 @@ exports.getAllProduct = (req, res, next) => {
     });
 };
 
-exports.getAllUsersProduct = (req, res, next) => {
+exports.getAllUserProducts = (req, res, next) => {
   const _id = req.params.user_id;
   const filter = { farmer: _id };
   Product.find(filter)

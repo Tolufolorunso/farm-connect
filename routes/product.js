@@ -15,7 +15,7 @@ router.get(
 router.get(
   '/:user_id',
   auth.authentication('farmer', 'admin', 'investor'),
-  userController.getAllUsersProduct
+  userController.getAllUserProducts
 );
 router.post(
   '/',

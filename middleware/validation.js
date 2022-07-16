@@ -83,7 +83,7 @@ const validateAmount = (req, res, next) => {
   let unit = parseFloat(req.body.minimumInvestmentPerUnit);
   if (amount % unit !== 0) {
     res.status(400).json({
-      status: 'fail',
+      status: false,
       message:
         'Amount Needed and minimum investment per unit are not valid, investment per unit must be a multiple of amount needed',
       data: {

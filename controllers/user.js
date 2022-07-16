@@ -278,19 +278,19 @@ exports.getAInvestor = async (req, res, next) => {
     }).select('-__v');
     if (!investor) {
       return res.status(404).json({
-        status: 'fail',
+        status: false,
         message: 'User not found',
       });
     }
     res.status(200).json({
-      status: 'success',
+      status: true,
       data: {
         investor,
       },
     });
   } catch (error) {
     res.status(500).json({
-      status: 'fail',
+      status: false,
       message: 'Problem occurs',
       data: {
         error: error.message,
